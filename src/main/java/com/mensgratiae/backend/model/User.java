@@ -1,22 +1,35 @@
 package com.mensgratiae.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
-public class User {
+@AllArgsConstructor
+@NoArgsConstructor
+public class User implements Serializable {
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private long id;
+
+    public enum ROLE {
+        USER, ADMIN
+    }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column
     private String username;
 
     @Column
-    @JsonIgnore
+    private String name;
+
+    @Column
+    private ROLE role;
+
+    @Column
     private String password;
 }
