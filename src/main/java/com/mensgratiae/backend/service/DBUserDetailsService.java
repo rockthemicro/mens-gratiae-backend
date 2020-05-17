@@ -23,6 +23,6 @@ public class DBUserDetailsService implements UserDetailsService {
         Optional<User> userOpt = userRepository.findById(username);
         User user = userOpt.orElseThrow(() -> new UsernameNotFoundException(username));
 
-        return new UserDetailsImpl(username, user.getName(), Arrays.asList("USER"));
+        return new UserDetailsImpl(username, user.getName(), user.getPassword(), Arrays.asList("USER"));
     }
 }

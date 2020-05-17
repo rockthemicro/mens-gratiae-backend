@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
     private String username;
     private String name;
+    private String password;
     private List<String> roles;
 
     @Override
@@ -24,8 +25,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        String noPasswordEncodingAlgo = "{noop}";
-        return noPasswordEncodingAlgo + getUsername();
+        return password;
     }
 
     @Override
