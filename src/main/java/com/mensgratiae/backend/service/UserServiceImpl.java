@@ -56,6 +56,9 @@ public class UserServiceImpl implements UserService {
             return userLoginOutput;
         }
 
+        userLoginOutput.setEmail(user.getEmail());
+        userLoginOutput.setName(user.getName());
+
         return userLoginOutput;
     }
 }
