@@ -1,6 +1,8 @@
 package com.mensgratiae.backend.service;
 
+import com.mensgratiae.backend.dto.BasicOutput;
 import com.mensgratiae.backend.dto.UserDto;
+import com.mensgratiae.backend.dto.UserLoginOutput;
 import com.mensgratiae.backend.dto.UserSignUpOutput;
 import com.mensgratiae.backend.model.User;
 import com.mensgratiae.backend.model.mapper.UserMapper;
@@ -22,7 +24,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOpt = userRepository.findById(userDto.getUsername());
         if (userOpt.isPresent()) {
             userSignUpOutput.setStatus(UserSignUpOutput.StatusEnum.ERROR);
-            userSignUpOutput.getErrors().add("User is already present");
+            userSignUpOutput.addErrorsItem("User is already present");
 
             return userSignUpOutput;
         }
@@ -32,5 +34,28 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return userSignUpOutput;
+    }
+
+    @Override
+    public UserLoginOutput login(String username, String password) {
+        UserLoginOutput userLoginOutput = new UserLoginOutput();
+
+        Optional<User> userOpt = userRepository.findById(username);
+        if (userOpt.isEmpty()) {
+            userLoginOutput.setStatus(BasicOutput.StatusEnum.ERROR);
+            userLoginOutput.addErrorsItem("Username not found");
+
+            return userLoginOutput;
+        }
+
+        User user = userOpt.get();
+        if (!user.getPassword().equals(password)) {
+            userLoginOutput.setStatus(BasicOutput.StatusEnum.ERROR);
+            userLoginOutput.addErrorsItem("Password is incorrect");
+
+            return userLoginOutput;
+        }
+
+        return userLoginOutput;
     }
 }
