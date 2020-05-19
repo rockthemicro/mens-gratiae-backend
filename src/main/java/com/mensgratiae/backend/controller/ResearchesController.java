@@ -1,14 +1,14 @@
 package com.mensgratiae.backend.controller;
 
 
+import com.mensgratiae.backend.dto.ResearchGetOutput;
 import com.mensgratiae.backend.dto.ResearchesGetOutput;
 import com.mensgratiae.backend.service.ResearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/researches")
@@ -25,5 +25,14 @@ public class ResearchesController {
         return ResponseEntity
                 .ok()
                 .body(researchesGetOutput);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResearchGetOutput> getResearch(@PathVariable @Valid long id) {
+        ResearchGetOutput researchGetOutput = researchService.getResearch(id);
+
+        return ResponseEntity
+                .ok()
+                .body(researchGetOutput);
     }
 }

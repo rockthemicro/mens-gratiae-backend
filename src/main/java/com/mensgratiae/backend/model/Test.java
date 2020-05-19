@@ -1,34 +1,37 @@
 package com.mensgratiae.backend.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Research {
+public class Test {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
-    private String title;
+    @ManyToOne
+    @JoinColumn(name = "researchId", referencedColumnName = "id")
+    private Research research;
 
     @Column
-    private String shortDesc;
+    private String name;
 
     @Column
-    private String fullDesc;
+    private String description;
 
     @Column
-    private LanguageEnum language;
+    private int scale;
 
-    public enum LanguageEnum {
-        ENG, ITA, ROM
-    }
+    @Column
+    @ElementCollection(targetClass = String.class)
+    private List<String> options;
 }

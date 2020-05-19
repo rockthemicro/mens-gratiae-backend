@@ -6,29 +6,19 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Research {
-
+@Entity
+public class RangeTestQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
-    private String title;
+    @ManyToOne
+    @JoinColumn(name = "testId", referencedColumnName = "id")
+    private Test test;
 
     @Column
-    private String shortDesc;
-
-    @Column
-    private String fullDesc;
-
-    @Column
-    private LanguageEnum language;
-
-    public enum LanguageEnum {
-        ENG, ITA, ROM
-    }
+    private String question;
 }

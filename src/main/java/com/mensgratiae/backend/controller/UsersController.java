@@ -28,8 +28,8 @@ public class UsersController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<UserLoginOutput> login(@RequestParam String username,
-                                                 @RequestParam String password) {
+    public ResponseEntity<UserLoginOutput> login(@RequestParam @Valid String username,
+                                                 @RequestParam @Valid String password) {
 
         UserLoginOutput userLoginOutput = userService.login(username, password);
 
