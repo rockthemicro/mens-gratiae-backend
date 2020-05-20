@@ -1,9 +1,6 @@
 package com.mensgratiae.backend.controller;
 
-import com.mensgratiae.backend.dto.AddOrUpdateTestOutput;
-import com.mensgratiae.backend.dto.TestDto;
-import com.mensgratiae.backend.dto.TestGetOutput;
-import com.mensgratiae.backend.dto.TestsGetOutput;
+import com.mensgratiae.backend.dto.*;
 import com.mensgratiae.backend.service.TestService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +51,27 @@ public class TestsController {
         return ResponseEntity
                 .ok()
                 .body(addOrUpdateTestOutput);
+    }
+
+    @PostMapping("/rangeTestQuestions/add")
+    public ResponseEntity<AddOrUpdateRangeTestQuestionOutput> addRangeTestQuestion(
+            @RequestBody @Valid RangeTestQuestionDto questionDto) {
+
+        AddOrUpdateRangeTestQuestionOutput output = testService.addOrUpdateRangeTestQuestion(questionDto, true);
+
+        return ResponseEntity
+                .ok()
+                .body(output);
+    }
+
+    @PutMapping("/rangeTestQuestions/update")
+    public ResponseEntity<AddOrUpdateRangeTestQuestionOutput> updateRangeTestQuestion(
+            @RequestBody @Valid RangeTestQuestionDto questionDto) {
+
+        AddOrUpdateRangeTestQuestionOutput output = testService.addOrUpdateRangeTestQuestion(questionDto, false);
+
+        return ResponseEntity
+                .ok()
+                .body(output);
     }
 }

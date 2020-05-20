@@ -76,4 +76,23 @@ public class TestServiceImpl implements TestService {
 
         return addOrUpdateTestOutput;
     }
+
+    @Override
+    public AddOrUpdateRangeTestQuestionOutput addOrUpdateRangeTestQuestion(RangeTestQuestionDto questionDto,
+                                                                           boolean isAdd) {
+        AddOrUpdateRangeTestQuestionOutput output = new AddOrUpdateRangeTestQuestionOutput();
+
+        RangeTestQuestion question = RangeTestQuestionMapper.INSTANCE.questionDtoToQuestion(questionDto);
+        question.setTest(new Test());
+        question.getTest().setId(questionDto.getTestId());
+
+        if (isAdd) {
+            question.setId(0);
+        }
+
+        question = rangeTestQuestionRepository.save(question);
+        output.setRangeTestQuestionId(question.getId());
+
+        return output;
+    }
 }

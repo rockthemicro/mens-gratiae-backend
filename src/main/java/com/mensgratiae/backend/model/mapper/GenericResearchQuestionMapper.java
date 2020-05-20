@@ -13,4 +13,6 @@ public interface GenericResearchQuestionMapper {
 
     @Mapping(target="researchId", source="question.research.id")
     GenericResearchQuestionDto questionToQuestionDto(GenericResearchQuestion question);
+
+    GenericResearchQuestion questionDtoToQuestion(GenericResearchQuestionDto questionDto);
 }

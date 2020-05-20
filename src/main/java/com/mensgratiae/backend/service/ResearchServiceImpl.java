@@ -85,4 +85,24 @@ public class ResearchServiceImpl implements ResearchService {
 
         return addOrUpdateResearchOutput;
     }
+
+    @Override
+    public AddOrUpdateGenericResearchQuestionOutput addOrUpdateGenericResearchQuestion(
+            GenericResearchQuestionDto questionDto, boolean isAdd) {
+
+        AddOrUpdateGenericResearchQuestionOutput output = new AddOrUpdateGenericResearchQuestionOutput();
+
+        GenericResearchQuestion question = GenericResearchQuestionMapper.INSTANCE.questionDtoToQuestion(questionDto);
+        question.setResearch(new Research());
+        question.getResearch().setId(questionDto.getResearchId());
+
+        if (isAdd) {
+            question.setId(0);
+        }
+
+        question = genericResearchQuestionRepository.save(question);
+        output.setGenericResearchQuestionId(question.getId());
+
+        return output;
+    }
 }
