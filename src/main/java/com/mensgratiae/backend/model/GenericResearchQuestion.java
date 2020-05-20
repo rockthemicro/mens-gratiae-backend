@@ -3,6 +3,7 @@ package com.mensgratiae.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -22,6 +23,7 @@ public class GenericResearchQuestion {
     private Research research;
 
     @Column
+    @Type(type="text")
     private String question;
 
     @Column
