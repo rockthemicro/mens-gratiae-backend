@@ -13,4 +13,6 @@ public interface RangeTestQuestionMapper {
 
     @Mapping(target="testId", source="question.test.id")
     RangeTestQuestionDto questionToQuestionDto(RangeTestQuestion question);
+
+    RangeTestQuestion questionDtoToQuestion(RangeTestQuestionDto questionDto);
 }

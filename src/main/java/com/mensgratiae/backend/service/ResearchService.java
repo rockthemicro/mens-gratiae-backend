@@ -1,10 +1,14 @@
 package com.mensgratiae.backend.service;
 
-import com.mensgratiae.backend.dto.ResearchGetOutput;
-import com.mensgratiae.backend.dto.ResearchesGetOutput;
+import com.mensgratiae.backend.dto.*;
 
 public interface ResearchService {
     ResearchesGetOutput getResearches();
 
     ResearchGetOutput getResearch(long id);
+
+    AddOrUpdateResearchOutput addOrUpdateResearch(ResearchDto researchDto, boolean isAdd);
+
+    AddOrUpdateGenericResearchQuestionOutput addOrUpdateGenericResearchQuestion(GenericResearchQuestionDto questionDto,
+                                                                                boolean isAdd);
 }

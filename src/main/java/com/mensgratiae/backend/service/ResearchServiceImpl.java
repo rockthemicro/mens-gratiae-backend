@@ -1,9 +1,6 @@
 package com.mensgratiae.backend.service;
 
-import com.mensgratiae.backend.dto.BasicOutput;
-import com.mensgratiae.backend.dto.ResearchDto;
-import com.mensgratiae.backend.dto.ResearchGetOutput;
-import com.mensgratiae.backend.dto.ResearchesGetOutput;
+import com.mensgratiae.backend.dto.*;
 import com.mensgratiae.backend.model.GenericResearchQuestion;
 import com.mensgratiae.backend.model.Research;
 import com.mensgratiae.backend.model.Test;
@@ -71,5 +68,41 @@ public class ResearchServiceImpl implements ResearchService {
                 .collect(Collectors.toList()));
 
         return researchGetOutput;
+    }
+
+    @Override
+    public AddOrUpdateResearchOutput addOrUpdateResearch(ResearchDto researchDto, boolean isAdd) {
+        AddOrUpdateResearchOutput addOrUpdateResearchOutput = new AddOrUpdateResearchOutput();
+
+        Research research = ResearchMapper.INSTANCE.researchDtoToResearch(researchDto);
+        if (isAdd) {
+            /* if we want to add, then remove the id so that .save() will generate a new one */
+            research.setId(0);
+        }
+
+        research = researchRepository.save(research);
+        addOrUpdateResearchOutput.setResearchId(research.getId());
+
+        return addOrUpdateResearchOutput;
+    }
+
+    @Override
+    public AddOrUpdateGenericResearchQuestionOutput addOrUpdateGenericResearchQuestion(
+            GenericResearchQuestionDto questionDto, boolean isAdd) {
+
+        AddOrUpdateGenericResearchQuestionOutput output = new AddOrUpdateGenericResearchQuestionOutput();
+
+        GenericResearchQuestion question = GenericResearchQuestionMapper.INSTANCE.questionDtoToQuestion(questionDto);
+        question.setResearch(new Research());
+        question.getResearch().setId(questionDto.getResearchId());
+
+        if (isAdd) {
+            question.setId(0);
+        }
+
+        question = genericResearchQuestionRepository.save(question);
+        output.setGenericResearchQuestionId(question.getId());
+
+        return output;
     }
 }

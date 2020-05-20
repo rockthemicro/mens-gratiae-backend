@@ -1,6 +1,6 @@
 package com.mensgratiae.backend.controller;
 
-import com.mensgratiae.backend.dto.TestsGetOutput;
+import com.mensgratiae.backend.dto.*;
 import com.mensgratiae.backend.service.TestService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +24,54 @@ public class TestsController {
         return ResponseEntity
                 .ok()
                 .body(testsGetOutput);
+    }
+
+    @GetMapping("/test/{id}")
+    public ResponseEntity<TestGetOutput> getTest(@PathVariable @Valid long id) {
+        TestGetOutput testGetOutput = testService.getTest(id);
+
+        return ResponseEntity
+                .ok()
+                .body(testGetOutput);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<AddOrUpdateTestOutput> addTest(@RequestBody @Valid TestDto testDto) {
+        AddOrUpdateTestOutput addOrUpdateTestOutput = testService.addOrUpdateTest(testDto, true);
+
+        return ResponseEntity
+                .ok()
+                .body(addOrUpdateTestOutput);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<AddOrUpdateTestOutput> updateTest(@RequestBody @Valid TestDto testDto) {
+        AddOrUpdateTestOutput addOrUpdateTestOutput = testService.addOrUpdateTest(testDto, false);
+
+        return ResponseEntity
+                .ok()
+                .body(addOrUpdateTestOutput);
+    }
+
+    @PostMapping("/rangeTestQuestions/add")
+    public ResponseEntity<AddOrUpdateRangeTestQuestionOutput> addRangeTestQuestion(
+            @RequestBody @Valid RangeTestQuestionDto questionDto) {
+
+        AddOrUpdateRangeTestQuestionOutput output = testService.addOrUpdateRangeTestQuestion(questionDto, true);
+
+        return ResponseEntity
+                .ok()
+                .body(output);
+    }
+
+    @PutMapping("/rangeTestQuestions/update")
+    public ResponseEntity<AddOrUpdateRangeTestQuestionOutput> updateRangeTestQuestion(
+            @RequestBody @Valid RangeTestQuestionDto questionDto) {
+
+        AddOrUpdateRangeTestQuestionOutput output = testService.addOrUpdateRangeTestQuestion(questionDto, false);
+
+        return ResponseEntity
+                .ok()
+                .body(output);
     }
 }
