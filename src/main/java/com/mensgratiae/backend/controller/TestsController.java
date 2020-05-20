@@ -1,5 +1,6 @@
 package com.mensgratiae.backend.controller;
 
+import com.mensgratiae.backend.dto.TestGetOutput;
 import com.mensgratiae.backend.dto.TestsGetOutput;
 import com.mensgratiae.backend.service.TestService;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,14 @@ public class TestsController {
         return ResponseEntity
                 .ok()
                 .body(testsGetOutput);
+    }
+
+    @GetMapping("/test/{id}")
+    public ResponseEntity<TestGetOutput> getTest(@PathVariable @Valid long id) {
+        TestGetOutput testGetOutput = testService.getTest(id);
+
+        return ResponseEntity
+                .ok()
+                .body(testGetOutput);
     }
 }
