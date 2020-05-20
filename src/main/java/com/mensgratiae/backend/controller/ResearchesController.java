@@ -1,6 +1,8 @@
 package com.mensgratiae.backend.controller;
 
 
+import com.mensgratiae.backend.dto.AddOrUpdateResearchOutput;
+import com.mensgratiae.backend.dto.ResearchDto;
 import com.mensgratiae.backend.dto.ResearchGetOutput;
 import com.mensgratiae.backend.dto.ResearchesGetOutput;
 import com.mensgratiae.backend.service.ResearchService;
@@ -34,5 +36,23 @@ public class ResearchesController {
         return ResponseEntity
                 .ok()
                 .body(researchGetOutput);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<AddOrUpdateResearchOutput> addResearch(@RequestBody @Valid ResearchDto researchDto) {
+        AddOrUpdateResearchOutput addOrUpdateResearchOutput = researchService.addOrUpdateResearch(researchDto, true);
+
+        return ResponseEntity
+                .ok()
+                .body(addOrUpdateResearchOutput);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<AddOrUpdateResearchOutput> updateResearch(@RequestBody @Valid ResearchDto researchDto) {
+        AddOrUpdateResearchOutput addOrUpdateResearchOutput = researchService.addOrUpdateResearch(researchDto, false);
+
+        return ResponseEntity
+                .ok()
+                .body(addOrUpdateResearchOutput);
     }
 }

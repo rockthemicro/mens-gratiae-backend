@@ -10,4 +10,5 @@ public interface ResearchMapper {
     ResearchMapper INSTANCE = Mappers.getMapper(ResearchMapper.class);
 
     ResearchDto researchToResearchDto(Research research);
+    Research researchDtoToResearch(ResearchDto researchDto);
 }
