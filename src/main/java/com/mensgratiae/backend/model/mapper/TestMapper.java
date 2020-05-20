@@ -12,4 +12,6 @@ public interface TestMapper {
 
     @Mapping(target="researchId", source="test.research.id")
     TestDto testToTestDto(Test test);
+
+    Test testDtoToTest(TestDto testDto);
 }

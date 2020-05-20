@@ -1,9 +1,8 @@
 package com.mensgratiae.backend.service;
 
-import com.mensgratiae.backend.dto.BasicOutput;
-import com.mensgratiae.backend.dto.TestGetOutput;
-import com.mensgratiae.backend.dto.TestsGetOutput;
+import com.mensgratiae.backend.dto.*;
 import com.mensgratiae.backend.model.RangeTestQuestion;
+import com.mensgratiae.backend.model.Research;
 import com.mensgratiae.backend.model.Test;
 import com.mensgratiae.backend.model.mapper.RangeTestQuestionMapper;
 import com.mensgratiae.backend.model.mapper.TestMapper;
@@ -58,5 +57,23 @@ public class TestServiceImpl implements TestService {
                 .collect(Collectors.toList()));
 
         return testGetOutput;
+    }
+
+    @Override
+    public AddOrUpdateTestOutput addOrUpdateTest(TestDto testDto, boolean isAdd) {
+        AddOrUpdateTestOutput addOrUpdateTestOutput = new AddOrUpdateTestOutput();
+
+        Test test = TestMapper.INSTANCE.testDtoToTest(testDto);
+        test.setResearch(new Research());
+        test.getResearch().setId(testDto.getResearchId());
+
+        if (isAdd) {
+            test.setId(0);
+        }
+
+        test = testRepository.save(test);
+        addOrUpdateTestOutput.setTestId(test.getId());
+
+        return addOrUpdateTestOutput;
     }
 }

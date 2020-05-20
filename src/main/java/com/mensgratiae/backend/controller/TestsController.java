@@ -1,5 +1,7 @@
 package com.mensgratiae.backend.controller;
 
+import com.mensgratiae.backend.dto.AddOrUpdateTestOutput;
+import com.mensgratiae.backend.dto.TestDto;
 import com.mensgratiae.backend.dto.TestGetOutput;
 import com.mensgratiae.backend.dto.TestsGetOutput;
 import com.mensgratiae.backend.service.TestService;
@@ -34,5 +36,23 @@ public class TestsController {
         return ResponseEntity
                 .ok()
                 .body(testGetOutput);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<AddOrUpdateTestOutput> addTest(@RequestBody @Valid TestDto testDto) {
+        AddOrUpdateTestOutput addOrUpdateTestOutput = testService.addOrUpdateTest(testDto, true);
+
+        return ResponseEntity
+                .ok()
+                .body(addOrUpdateTestOutput);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<AddOrUpdateTestOutput> updateTest(@RequestBody @Valid TestDto testDto) {
+        AddOrUpdateTestOutput addOrUpdateTestOutput = testService.addOrUpdateTest(testDto, false);
+
+        return ResponseEntity
+                .ok()
+                .body(addOrUpdateTestOutput);
     }
 }
