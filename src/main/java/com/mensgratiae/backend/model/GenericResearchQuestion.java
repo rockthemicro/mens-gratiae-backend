@@ -34,6 +34,9 @@ public class GenericResearchQuestion {
     @ElementCollection(targetClass = String.class)
     List<String> options;
 
+    @Column
+    private int relativePosition;
+
     public enum QuestionType {
         YES_NO, RANGE, TEXT, SINGLE_CHOICE, MULTIPLE_CHOICE
     }

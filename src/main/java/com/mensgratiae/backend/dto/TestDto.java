@@ -16,4 +16,5 @@ public class TestDto {
     private String description;
     private int scale;
     private List<String> options;
+    private int relativePosition;
 }

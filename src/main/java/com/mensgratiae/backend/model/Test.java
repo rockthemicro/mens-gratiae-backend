@@ -34,4 +34,7 @@ public class Test {
     @Column
     @ElementCollection(targetClass = String.class)
     private List<String> options;
+
+    @Column
+    private int relativePosition;
 }

@@ -21,4 +21,7 @@ public class RangeTestQuestion {
 
     @Column
     private String question;
+
+    @Column
+    private int relativePosition;
 }

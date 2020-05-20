@@ -11,4 +11,5 @@ public class RangeTestQuestionDto {
     private long id;
     private long testId;
     private String question;
+    private int relativePosition;
 }

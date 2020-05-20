@@ -16,6 +16,7 @@ public class GenericResearchQuestionDto {
     private QuestionType type;
     private int numberOfOptions;
     List<String> options;
+    private int relativePosition;
 
     public enum QuestionType {
         YES_NO, RANGE, TEXT, SINGLE_CHOICE, MULTIPLE_CHOICE
