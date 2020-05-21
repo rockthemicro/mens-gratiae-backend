@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/researches")
@@ -84,5 +85,23 @@ public class ResearchesController {
         return ResponseEntity
                 .ok()
                 .body(researchService.deleteGenericResearchQuestion(id));
+    }
+
+    @PostMapping("/genericResearchQuestionAnswers")
+    public ResponseEntity<BasicOutput> addGenericResearchQuestionAnswers(
+            @RequestBody List<GenericResearchQuestionAnswerDto> answers) {
+
+        return ResponseEntity
+                .ok()
+                .body(researchService.addGenericResearchQuestionAnswers(answers));
+    }
+
+    @GetMapping("/genericResearchQuestionAnswers/{researchId}")
+    public ResponseEntity<GenericResearchQuestionAnswersGetOutput> getGenericResearchQuestionAnswers(
+            @PathVariable @Valid long researchId) {
+
+        return ResponseEntity
+                .ok()
+                .body(researchService.getGenericResearchQuestionAnswers(researchId));
     }
 }
