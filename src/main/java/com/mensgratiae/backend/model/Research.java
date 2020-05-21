@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,6 +31,12 @@ public class Research {
 
     @Column
     private LanguageEnum language;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research")
+    private List<Test> tests;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research")
+    private List<GenericResearchQuestion> questions;
 
     public enum LanguageEnum {
         ENG, ITA, ROM

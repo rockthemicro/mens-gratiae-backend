@@ -39,4 +39,7 @@ public class Test {
 
     @Column
     private int relativePosition;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "test")
+    private List<RangeTestQuestion> questions;
 }
