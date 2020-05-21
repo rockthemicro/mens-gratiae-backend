@@ -6,28 +6,21 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class RangeTestQuestion {
+public class GenericResearchQuestionAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "testId", referencedColumnName = "id")
-    private Test test;
-
     @Column
     @Type(type="text")
-    private String question;
+    private String answer;
 
-    @Column
-    private int relativePosition;
-
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question")
-    private List<RangeTestQuestionAnswer> answers;
+    @ManyToOne
+    @JoinColumn(name = "questionId", referencedColumnName = "id")
+    private GenericResearchQuestion question;
 }

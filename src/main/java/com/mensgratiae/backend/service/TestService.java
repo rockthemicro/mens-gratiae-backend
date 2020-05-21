@@ -2,6 +2,8 @@ package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
 
+import java.util.List;
+
 public interface TestService {
     TestsGetOutput getTests(long researchId);
 
@@ -14,4 +16,8 @@ public interface TestService {
     BasicOutput deleteTest(long id);
 
     BasicOutput deleteRangeTestQuestion(long id);
+
+    BasicOutput addRangeTestQuestionAnswers(List<RangeTestQuestionAnswerDto> answersDto);
+
+    RangeTestQuestionAnswersGetOutput getRangeTestQuestionAnswers(long testId);
 }

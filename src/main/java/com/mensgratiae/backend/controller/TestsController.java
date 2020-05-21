@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tests")
@@ -87,5 +88,23 @@ public class TestsController {
         return ResponseEntity
                 .ok()
                 .body(testService.deleteRangeTestQuestion(id));
+    }
+
+    @PostMapping("/rangeTestQuestionAnswers")
+    public ResponseEntity<BasicOutput> addRangeTestQuestionAnswers(
+            @RequestBody List<RangeTestQuestionAnswerDto> answersDto) {
+
+        return ResponseEntity
+                .ok()
+                .body(testService.addRangeTestQuestionAnswers(answersDto));
+    }
+
+    @GetMapping("/rangeTestQuestionAnswers/{testId}")
+    public ResponseEntity<RangeTestQuestionAnswersGetOutput> getRangeTestQuestionAnswers(
+            @PathVariable @Valid long testId) {
+
+        return ResponseEntity
+                .ok()
+                .body(testService.getRangeTestQuestionAnswers(testId));
     }
 }

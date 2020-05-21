@@ -42,4 +42,7 @@ public class GenericResearchQuestion {
     public enum QuestionType {
         YES_NO, RANGE, TEXT, SINGLE_CHOICE, MULTIPLE_CHOICE
     }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question")
+    private List<GenericResearchQuestionAnswer> answers;
 }

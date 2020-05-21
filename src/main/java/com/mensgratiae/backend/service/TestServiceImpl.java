@@ -1,11 +1,11 @@
 package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
-import com.mensgratiae.backend.model.RangeTestQuestion;
-import com.mensgratiae.backend.model.Research;
-import com.mensgratiae.backend.model.Test;
+import com.mensgratiae.backend.model.*;
+import com.mensgratiae.backend.model.mapper.GenericResearchQuestionMapper;
 import com.mensgratiae.backend.model.mapper.RangeTestQuestionMapper;
 import com.mensgratiae.backend.model.mapper.TestMapper;
+import com.mensgratiae.backend.repository.RangeTestQuestionAnswerRepository;
 import com.mensgratiae.backend.repository.RangeTestQuestionRepository;
 import com.mensgratiae.backend.repository.TestRepository;
 import lombok.AllArgsConstructor;
@@ -21,6 +21,7 @@ public class TestServiceImpl implements TestService {
 
     private TestRepository testRepository;
     private RangeTestQuestionRepository rangeTestQuestionRepository;
+    private RangeTestQuestionAnswerRepository rangeTestQuestionAnswerRepository;
 
     @Override
     public TestsGetOutput getTests(long researchId) {
@@ -108,5 +109,44 @@ public class TestServiceImpl implements TestService {
         rangeTestQuestionRepository.deleteById(id);
 
         return new BasicOutput();
+    }
+
+    @Override
+    public BasicOutput addRangeTestQuestionAnswers(List<RangeTestQuestionAnswerDto> answersDto) {
+        List<RangeTestQuestionAnswer> answers = answersDto
+                .stream()
+                .map(answerDto -> {
+                    RangeTestQuestionAnswer answer =  RangeTestQuestionMapper
+                            .INSTANCE
+                            .questionAnswerDtoToQuestionAnswer(answerDto);
+
+                    answer.setQuestion(new RangeTestQuestion());
+                    answer.getQuestion().setId(answerDto.getQuestionId());
+
+                    return answer;
+                })
+                .collect(Collectors.toList());
+
+        answers.forEach(rangeTestQuestionAnswerRepository::save);
+
+        return new BasicOutput();
+    }
+
+    @Override
+    public RangeTestQuestionAnswersGetOutput getRangeTestQuestionAnswers(long testId) {
+        RangeTestQuestionAnswersGetOutput output =
+                new RangeTestQuestionAnswersGetOutput();
+
+        List<RangeTestQuestion> rangeTestQuestions =
+                rangeTestQuestionRepository.findAllByTest_Id(testId);
+
+        rangeTestQuestions.forEach(question -> {
+            List<RangeTestQuestionAnswer> answers = rangeTestQuestionAnswerRepository
+                    .findAllByQuestion_Id(question.getId());
+
+            output.getAnswers().put(question.getId(), answers);
+        });
+
+        return output;
     }
 }

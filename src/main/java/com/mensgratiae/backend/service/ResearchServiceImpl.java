@@ -2,11 +2,13 @@ package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
 import com.mensgratiae.backend.model.GenericResearchQuestion;
+import com.mensgratiae.backend.model.GenericResearchQuestionAnswer;
 import com.mensgratiae.backend.model.Research;
 import com.mensgratiae.backend.model.Test;
 import com.mensgratiae.backend.model.mapper.GenericResearchQuestionMapper;
 import com.mensgratiae.backend.model.mapper.ResearchMapper;
 import com.mensgratiae.backend.model.mapper.TestMapper;
+import com.mensgratiae.backend.repository.GenericResearchQuestionAnswerRepository;
 import com.mensgratiae.backend.repository.GenericResearchQuestionRepository;
 import com.mensgratiae.backend.repository.ResearchRepository;
 import com.mensgratiae.backend.repository.TestRepository;
@@ -24,6 +26,7 @@ public class ResearchServiceImpl implements ResearchService {
     private ResearchRepository researchRepository;
     private TestRepository testRepository;
     private GenericResearchQuestionRepository genericResearchQuestionRepository;
+    private GenericResearchQuestionAnswerRepository genericResearchQuestionAnswerRepository;
 
     @Override
     public ResearchesGetOutput getResearches() {
@@ -118,5 +121,46 @@ public class ResearchServiceImpl implements ResearchService {
         genericResearchQuestionRepository.deleteById(id);
 
         return new BasicOutput();
+    }
+
+    @Override
+    public BasicOutput addGenericResearchQuestionAnswers(List<GenericResearchQuestionAnswerDto> answersDto) {
+        List<GenericResearchQuestionAnswer> answers = answersDto
+                .stream()
+                .map(answerDto -> {
+                    GenericResearchQuestionAnswer answer =  GenericResearchQuestionMapper
+                            .INSTANCE
+                            .questionAnswerDtoToQuestionAnswer(answerDto);
+
+                    answer.setQuestion(new GenericResearchQuestion());
+                    answer.getQuestion().setId(answerDto.getQuestionId());
+
+                    return answer;
+                })
+                .collect(Collectors.toList());
+
+        answers.forEach(genericResearchQuestionAnswerRepository::save);
+
+        return new BasicOutput();
+    }
+
+    @Override
+    public GenericResearchQuestionAnswersGetOutput getGenericResearchQuestionAnswers(
+            long researchId) {
+
+        GenericResearchQuestionAnswersGetOutput output =
+                new GenericResearchQuestionAnswersGetOutput();
+
+        List<GenericResearchQuestion> genericResearchQuestions =
+                genericResearchQuestionRepository.findAllByResearch_Id(researchId);
+
+        genericResearchQuestions.forEach(question -> {
+            List<GenericResearchQuestionAnswer> answers = genericResearchQuestionAnswerRepository
+                    .findAllByQuestion_Id(question.getId());
+
+            output.getAnswers().put(question.getId(), answers);
+        });
+
+        return output;
     }
 }

@@ -2,6 +2,8 @@ package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
 
+import java.util.List;
+
 public interface ResearchService {
     ResearchesGetOutput getResearches();
 
@@ -15,4 +17,9 @@ public interface ResearchService {
     BasicOutput deleteResearch(long id);
 
     BasicOutput deleteGenericResearchQuestion(long id);
+
+    BasicOutput addGenericResearchQuestionAnswers(List<GenericResearchQuestionAnswerDto> answersDto);
+
+    GenericResearchQuestionAnswersGetOutput getGenericResearchQuestionAnswers(
+            long researchId);
 }
