@@ -10,4 +10,8 @@ public interface TestService {
     AddOrUpdateTestOutput addOrUpdateTest(TestDto testDto, boolean isAdd);
 
     AddOrUpdateRangeTestQuestionOutput addOrUpdateRangeTestQuestion(RangeTestQuestionDto questionDto, boolean isAdd);
+
+    BasicOutput deleteTest(long id);
+
+    BasicOutput deleteRangeTestQuestion(long id);
 }

@@ -95,4 +95,18 @@ public class TestServiceImpl implements TestService {
 
         return output;
     }
+
+    @Override
+    public BasicOutput deleteTest(long id) {
+        testRepository.deleteById(id);
+
+        return new BasicOutput();
+    }
+
+    @Override
+    public BasicOutput deleteRangeTestQuestion(long id) {
+        rangeTestQuestionRepository.deleteById(id);
+
+        return new BasicOutput();
+    }
 }

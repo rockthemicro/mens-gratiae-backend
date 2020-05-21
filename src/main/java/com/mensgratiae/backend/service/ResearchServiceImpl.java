@@ -105,4 +105,18 @@ public class ResearchServiceImpl implements ResearchService {
 
         return output;
     }
+
+    @Override
+    public BasicOutput deleteResearch(long id) {
+        researchRepository.deleteById(id);
+
+        return new BasicOutput();
+    }
+
+    @Override
+    public BasicOutput deleteGenericResearchQuestion(long id) {
+        genericResearchQuestionRepository.deleteById(id);
+
+        return new BasicOutput();
+    }
 }

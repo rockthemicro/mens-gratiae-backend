@@ -53,6 +53,13 @@ public class TestsController {
                 .body(addOrUpdateTestOutput);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BasicOutput> deleteTest(@PathVariable @Valid long id) {
+        return ResponseEntity
+                .ok()
+                .body(testService.deleteTest(id));
+    }
+
     @PostMapping("/rangeTestQuestions/add")
     public ResponseEntity<AddOrUpdateRangeTestQuestionOutput> addRangeTestQuestion(
             @RequestBody @Valid RangeTestQuestionDto questionDto) {
@@ -73,5 +80,12 @@ public class TestsController {
         return ResponseEntity
                 .ok()
                 .body(output);
+    }
+
+    @DeleteMapping("/rangeTestQuestions/{id}")
+    public ResponseEntity<BasicOutput> deleteRangeTestQuestion(@PathVariable @Valid long id) {
+        return ResponseEntity
+                .ok()
+                .body(testService.deleteRangeTestQuestion(id));
     }
 }

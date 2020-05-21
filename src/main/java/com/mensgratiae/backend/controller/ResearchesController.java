@@ -53,6 +53,13 @@ public class ResearchesController {
                 .body(addOrUpdateResearchOutput);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BasicOutput> deleteResearch(@PathVariable @Valid long id) {
+        return ResponseEntity
+                .ok()
+                .body(researchService.deleteResearch(id));
+    }
+
     @PostMapping("/genericResearchQuestions/add")
     public ResponseEntity<AddOrUpdateGenericResearchQuestionOutput> addGenericResearchQuestion(
             @RequestBody @Valid GenericResearchQuestionDto questionDto) {
@@ -70,5 +77,12 @@ public class ResearchesController {
         return ResponseEntity
                 .ok()
                 .body(researchService.addOrUpdateGenericResearchQuestion(questionDto, false));
+    }
+
+    @DeleteMapping("/genericResearchQuestions/{id}")
+    public ResponseEntity<BasicOutput> deleteGenericResearchQuestion(@PathVariable @Valid long id) {
+        return ResponseEntity
+                .ok()
+                .body(researchService.deleteGenericResearchQuestion(id));
     }
 }
