@@ -87,21 +87,21 @@ public class ResearchesController {
                 .body(researchService.deleteGenericResearchQuestion(id));
     }
 
-    @PostMapping("/genericResearchQuestionAnswers")
-    public ResponseEntity<BasicOutput> addGenericResearchQuestionAnswers(
-            @RequestBody List<GenericResearchQuestionAnswerDto> answers) {
-
-        return ResponseEntity
-                .ok()
-                .body(researchService.addGenericResearchQuestionAnswers(answers));
-    }
-
-    @GetMapping("/genericResearchQuestionAnswers/{researchId}")
-    public ResponseEntity<GenericResearchQuestionAnswersGetOutput> getGenericResearchQuestionAnswers(
-            @PathVariable @Valid long researchId) {
-
-        return ResponseEntity
-                .ok()
-                .body(researchService.getGenericResearchQuestionAnswers(researchId));
-    }
+//    @PostMapping("/genericResearchQuestionAnswers")
+//    public ResponseEntity<BasicOutput> addGenericResearchQuestionAnswers(
+//            @RequestBody List<GenericResearchQuestionAnswerDto> answers) {
+//
+//        return ResponseEntity
+//                .ok()
+//                .body(researchService.addGenericResearchQuestionAnswers(answers));
+//    }
+//
+//    @GetMapping("/genericResearchQuestionAnswers/{researchId}")
+//    public ResponseEntity<GenericResearchQuestionAnswersGetOutput> getGenericResearchQuestionAnswers(
+//            @PathVariable @Valid long researchId) {
+//
+//        return ResponseEntity
+//                .ok()
+//                .body(researchService.getGenericResearchQuestionAnswers(researchId));
+//    }
 }

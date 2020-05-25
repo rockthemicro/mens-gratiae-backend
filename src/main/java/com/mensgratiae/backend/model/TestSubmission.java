@@ -3,28 +3,27 @@ package com.mensgratiae.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.List;
 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class GenericResearchQuestionAnswer {
+public class TestSubmission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
-    @Type(type="text")
-    private String answer;
-
     @ManyToOne
-    @JoinColumn(name = "questionId", referencedColumnName = "id")
-    private GenericResearchQuestion question;
+    @JoinColumn(name = "testId", referencedColumnName = "id")
+    private Test test;
 
     @ManyToOne
     @JoinColumn(name = "researchSubmissionId", referencedColumnName = "id")
     private ResearchSubmission researchSubmission;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "testSubmission")
+    private List<RangeTestQuestionAnswer> answers;
 }

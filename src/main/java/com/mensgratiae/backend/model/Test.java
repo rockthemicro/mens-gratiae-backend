@@ -42,4 +42,7 @@ public class Test {
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "test")
     private List<RangeTestQuestion> questions;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "test")
+    private List<TestSubmission> testSubmissions;
 }

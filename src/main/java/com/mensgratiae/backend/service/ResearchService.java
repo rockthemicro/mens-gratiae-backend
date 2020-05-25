@@ -18,8 +18,8 @@ public interface ResearchService {
 
     BasicOutput deleteGenericResearchQuestion(long id);
 
-    BasicOutput addGenericResearchQuestionAnswers(List<GenericResearchQuestionAnswerDto> answersDto);
-
-    GenericResearchQuestionAnswersGetOutput getGenericResearchQuestionAnswers(
-            long researchId);
+//    BasicOutput addGenericResearchQuestionAnswers(List<GenericResearchQuestionAnswerDto> answersDto);
+//
+//    GenericResearchQuestionAnswersGetOutput getGenericResearchQuestionAnswers(
+//            long researchId);
 }
