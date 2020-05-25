@@ -21,4 +21,8 @@ public class RangeTestQuestionAnswer {
     @ManyToOne
     @JoinColumn(name = "questionId", referencedColumnName = "id")
     private RangeTestQuestion question;
+
+    @ManyToOne
+    @JoinColumn(name = "testSubmissionId", referencedColumnName = "id")
+    private TestSubmission testSubmission;
 }

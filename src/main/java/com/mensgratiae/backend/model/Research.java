@@ -38,6 +38,9 @@ public class Research {
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research")
     private List<GenericResearchQuestion> questions;
 
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research")
+    private List<ResearchSubmission> researchSubmissions;
+
     public enum LanguageEnum {
         ENG, ITA, ROM
     }

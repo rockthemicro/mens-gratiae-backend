@@ -17,7 +17,7 @@ public interface TestService {
 
     BasicOutput deleteRangeTestQuestion(long id);
 
-    BasicOutput addRangeTestQuestionAnswers(List<RangeTestQuestionAnswerDto> answersDto);
-
-    RangeTestQuestionAnswersGetOutput getRangeTestQuestionAnswers(long testId);
+//    BasicOutput addRangeTestQuestionAnswers(List<RangeTestQuestionAnswerDto> answersDto);
+//
+//    RangeTestQuestionAnswersGetOutput getRangeTestQuestionAnswers(long testId);
 }
