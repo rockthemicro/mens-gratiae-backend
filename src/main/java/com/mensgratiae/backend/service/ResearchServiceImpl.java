@@ -1,19 +1,14 @@
 package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
-import com.mensgratiae.backend.model.GenericResearchQuestion;
-import com.mensgratiae.backend.model.GenericResearchQuestionAnswer;
-import com.mensgratiae.backend.model.Research;
-import com.mensgratiae.backend.model.Test;
+import com.mensgratiae.backend.model.*;
 import com.mensgratiae.backend.model.mapper.GenericResearchQuestionMapper;
 import com.mensgratiae.backend.model.mapper.ResearchMapper;
 import com.mensgratiae.backend.model.mapper.TestMapper;
-import com.mensgratiae.backend.repository.GenericResearchQuestionAnswerRepository;
-import com.mensgratiae.backend.repository.GenericResearchQuestionRepository;
-import com.mensgratiae.backend.repository.ResearchRepository;
-import com.mensgratiae.backend.repository.TestRepository;
+import com.mensgratiae.backend.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +22,9 @@ public class ResearchServiceImpl implements ResearchService {
     private TestRepository testRepository;
     private GenericResearchQuestionRepository genericResearchQuestionRepository;
     private GenericResearchQuestionAnswerRepository genericResearchQuestionAnswerRepository;
+    private RangeTestQuestionAnswerRepository rangeTestQuestionAnswerRepository;
+    private ResearchSubmissionRepository researchSubmissionRepository;
+    private TestSubmissionRepository testSubmissionRepository;
 
     @Override
     public ResearchesGetOutput getResearches() {
@@ -119,6 +117,79 @@ public class ResearchServiceImpl implements ResearchService {
     @Override
     public BasicOutput deleteGenericResearchQuestion(long id) {
         genericResearchQuestionRepository.deleteById(id);
+
+        return new BasicOutput();
+    }
+
+    @Transactional
+    @Override
+    public BasicOutput addSubmission(AddSubmissionInput submission) {
+        ResearchSubmission researchSubmission = new ResearchSubmission();
+
+        researchSubmission.setId(0);
+        researchSubmission.setResearch(new Research());
+        researchSubmission.getResearch().setId(submission.getResearchId());
+
+        ResearchSubmission finalResearchSubmission = researchSubmissionRepository.save(researchSubmission);
+
+        submission.getGenericResearchQuestionAnswers().forEach((questionId, answers) -> {
+            for (String answer : answers) {
+                GenericResearchQuestionAnswer genericResearchQuestionAnswer =
+                        new GenericResearchQuestionAnswer();
+
+                genericResearchQuestionAnswer.setId(0);
+                genericResearchQuestionAnswer.setAnswer(answer);
+
+                genericResearchQuestionAnswer.setResearchSubmission(new ResearchSubmission());
+                genericResearchQuestionAnswer
+                        .getResearchSubmission()
+                        .setId(finalResearchSubmission.getId());
+
+                genericResearchQuestionAnswer.setQuestion(new GenericResearchQuestion());
+                genericResearchQuestionAnswer
+                        .getQuestion()
+                        .setId(questionId);
+
+                genericResearchQuestionAnswerRepository
+                        .save(genericResearchQuestionAnswer);
+            }
+        });
+
+        submission.getRangeTestQuestionAnswers().forEach((testId, answers) -> {
+            TestSubmission testSubmission = new TestSubmission();
+
+            testSubmission.setId(0);
+
+            testSubmission.setTest(new Test());
+            testSubmission.getTest().setId(testId);
+
+            testSubmission.setResearchSubmission(new ResearchSubmission());
+            testSubmission
+                    .getResearchSubmission()
+                    .setId(finalResearchSubmission.getId());
+
+            TestSubmission finalTestSubmission = testSubmissionRepository.save(testSubmission);
+
+            answers.forEach((questionId, answer) -> {
+                RangeTestQuestionAnswer rangeTestQuestionAnswer = new RangeTestQuestionAnswer();
+
+                rangeTestQuestionAnswer.setId(0);
+                rangeTestQuestionAnswer.setAnswer(answer);
+
+                rangeTestQuestionAnswer.setTestSubmission(new TestSubmission());
+                rangeTestQuestionAnswer
+                        .getTestSubmission()
+                        .setId(finalTestSubmission.getId());
+
+                rangeTestQuestionAnswer.setQuestion(new RangeTestQuestion());
+                rangeTestQuestionAnswer
+                        .getQuestion()
+                        .setId(questionId);
+
+                rangeTestQuestionAnswerRepository
+                        .save(rangeTestQuestionAnswer);
+            });
+        });
 
         return new BasicOutput();
     }

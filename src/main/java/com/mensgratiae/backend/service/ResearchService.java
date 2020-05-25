@@ -18,6 +18,8 @@ public interface ResearchService {
 
     BasicOutput deleteGenericResearchQuestion(long id);
 
+    BasicOutput addSubmission(AddSubmissionInput submission);
+
 //    BasicOutput addGenericResearchQuestionAnswers(List<GenericResearchQuestionAnswerDto> answersDto);
 //
 //    GenericResearchQuestionAnswersGetOutput getGenericResearchQuestionAnswers(
