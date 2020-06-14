@@ -40,7 +40,7 @@ public class GenericResearchQuestion {
     private int relativePosition;
 
     public enum QuestionType {
-        YES_NO, RANGE, TEXT, SINGLE_CHOICE, MULTIPLE_CHOICE
+        YES_NO, RANGE, TEXT, SINGLE_CHOICE, MULTIPLE_CHOICE, NUMBER
     }
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question")
