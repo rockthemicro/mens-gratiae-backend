@@ -89,22 +89,4 @@ public class TestsController {
                 .ok()
                 .body(testService.deleteRangeTestQuestion(id));
     }
-
-//    @PostMapping("/rangeTestQuestionAnswers")
-//    public ResponseEntity<BasicOutput> addRangeTestQuestionAnswers(
-//            @RequestBody List<RangeTestQuestionAnswerDto> answersDto) {
-//
-//        return ResponseEntity
-//                .ok()
-//                .body(testService.addRangeTestQuestionAnswers(answersDto));
-//    }
-//
-//    @GetMapping("/rangeTestQuestionAnswers/{testId}")
-//    public ResponseEntity<RangeTestQuestionAnswersGetOutput> getRangeTestQuestionAnswers(
-//            @PathVariable @Valid long testId) {
-//
-//        return ResponseEntity
-//                .ok()
-//                .body(testService.getRangeTestQuestionAnswers(testId));
-//    }
 }

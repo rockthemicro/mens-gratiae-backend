@@ -93,21 +93,10 @@ public class ResearchesController {
                 .body(researchService.addSubmission(submission));
     }
 
-//    @PostMapping("/genericResearchQuestionAnswers")
-//    public ResponseEntity<BasicOutput> addGenericResearchQuestionAnswers(
-//            @RequestBody List<GenericResearchQuestionAnswerDto> answers) {
-//
-//        return ResponseEntity
-//                .ok()
-//                .body(researchService.addGenericResearchQuestionAnswers(answers));
-//    }
-//
-//    @GetMapping("/genericResearchQuestionAnswers/{researchId}")
-//    public ResponseEntity<GenericResearchQuestionAnswersGetOutput> getGenericResearchQuestionAnswers(
-//            @PathVariable @Valid long researchId) {
-//
-//        return ResponseEntity
-//                .ok()
-//                .body(researchService.getGenericResearchQuestionAnswers(researchId));
-//    }
+    @DeleteMapping("/deleteSubmission/{id}")
+    public ResponseEntity<BasicOutput> deleteSubmission(@PathVariable @Valid long id) {
+        return ResponseEntity
+                .ok()
+                .body(researchService.deleteSubmission(id));
+    }
 }
