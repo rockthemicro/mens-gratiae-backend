@@ -110,43 +110,4 @@ public class TestServiceImpl implements TestService {
 
         return new BasicOutput();
     }
-
-//    @Override
-//    public BasicOutput addRangeTestQuestionAnswers(List<RangeTestQuestionAnswerDto> answersDto) {
-//        List<RangeTestQuestionAnswer> answers = answersDto
-//                .stream()
-//                .map(answerDto -> {
-//                    RangeTestQuestionAnswer answer =  RangeTestQuestionMapper
-//                            .INSTANCE
-//                            .questionAnswerDtoToQuestionAnswer(answerDto);
-//
-//                    answer.setQuestion(new RangeTestQuestion());
-//                    answer.getQuestion().setId(answerDto.getQuestionId());
-//
-//                    return answer;
-//                })
-//                .collect(Collectors.toList());
-//
-//        answers.forEach(rangeTestQuestionAnswerRepository::save);
-//
-//        return new BasicOutput();
-//    }
-//
-//    @Override
-//    public RangeTestQuestionAnswersGetOutput getRangeTestQuestionAnswers(long testId) {
-//        RangeTestQuestionAnswersGetOutput output =
-//                new RangeTestQuestionAnswersGetOutput();
-//
-//        List<RangeTestQuestion> rangeTestQuestions =
-//                rangeTestQuestionRepository.findAllByTest_Id(testId);
-//
-//        rangeTestQuestions.forEach(question -> {
-//            List<RangeTestQuestionAnswer> answers = rangeTestQuestionAnswerRepository
-//                    .findAllByQuestion_Id(question.getId());
-//
-//            output.getAnswers().put(question.getId(), answers);
-//        });
-//
-//        return output;
-//    }
 }
