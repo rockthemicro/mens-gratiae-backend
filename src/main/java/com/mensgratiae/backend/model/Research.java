@@ -32,13 +32,13 @@ public class Research {
     @Column
     private LanguageEnum language;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research", fetch = FetchType.LAZY)
     private List<Test> tests;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research", fetch = FetchType.LAZY)
     private List<GenericResearchQuestion> questions;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "research", fetch = FetchType.LAZY)
     private List<ResearchSubmission> researchSubmissions;
 
     public enum LanguageEnum {

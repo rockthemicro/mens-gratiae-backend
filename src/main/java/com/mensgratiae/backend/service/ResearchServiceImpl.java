@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,11 +20,11 @@ import java.util.stream.Collectors;
 public class ResearchServiceImpl implements ResearchService {
 
     private ResearchRepository researchRepository;
-    private TestRepository testRepository;
     private GenericResearchQuestionRepository genericResearchQuestionRepository;
     private GenericResearchQuestionAnswerRepository genericResearchQuestionAnswerRepository;
     private RangeTestQuestionAnswerRepository rangeTestQuestionAnswerRepository;
     private ResearchSubmissionRepository researchSubmissionRepository;
+    private TestRepository testRepository;
     private TestSubmissionRepository testSubmissionRepository;
 
     @Override
@@ -55,7 +56,7 @@ public class ResearchServiceImpl implements ResearchService {
         Research research = researchOpt.get();
         researchGetOutput.setResearch(ResearchMapper.INSTANCE.researchToResearchDto(research));
 
-        List<Test> tests = testRepository.findAllByResearch_Id(id);
+        List<Test> tests = testRepository.findAllByResearchId(id);
         researchGetOutput.setTests(tests
                 .stream()
                 .map(TestMapper.INSTANCE::testToTestDto)
@@ -126,7 +127,7 @@ public class ResearchServiceImpl implements ResearchService {
     public BasicOutput addSubmission(AddSubmissionInput submission) {
         ResearchSubmission researchSubmission = new ResearchSubmission();
 
-        researchSubmission.setId(0);
+        researchSubmission.setId(0L);
         researchSubmission.setResearch(new Research());
         researchSubmission.getResearch().setId(submission.getResearchId());
 
@@ -139,11 +140,6 @@ public class ResearchServiceImpl implements ResearchService {
 
                 genericResearchQuestionAnswer.setId(0);
                 genericResearchQuestionAnswer.setAnswer(answer);
-
-                genericResearchQuestionAnswer.setResearchSubmission(new ResearchSubmission());
-                genericResearchQuestionAnswer
-                        .getResearchSubmission()
-                        .setId(finalResearchSubmission.getId());
 
                 genericResearchQuestionAnswer.setQuestion(new GenericResearchQuestion());
                 genericResearchQuestionAnswer
@@ -195,8 +191,46 @@ public class ResearchServiceImpl implements ResearchService {
     }
 
     @Override
-    public BasicOutput deleteSubmission(long id) {
-        researchSubmissionRepository.deleteById(id);
+    public BasicOutput deleteSubmission(long submissionId) {
+        researchSubmissionRepository.deleteById(submissionId);
+
+        return new BasicOutput();
+    }
+
+    @Override
+    public BasicOutput getSubmissions(long researchId) {
+        List<ResearchSubmission> result = new ArrayList<>();
+        List<ResearchSubmission> foundResearchSubmissionList = researchSubmissionRepository.findAllByResearchId(researchId);
+
+
+        for (ResearchSubmission foundResearchSubmission : foundResearchSubmissionList) {
+            ResearchSubmission researchSubmission = new ResearchSubmission();
+            researchSubmission.setAnswers(new ArrayList<>());
+            researchSubmission.setTestSubmissions(new ArrayList<>());
+
+            for (GenericResearchQuestionAnswer foundAnswer : foundResearchSubmission.getAnswers()) {
+                GenericResearchQuestionAnswer answer = new GenericResearchQuestionAnswer();
+                answer.setAnswer(foundAnswer.getAnswer());
+
+                researchSubmission.getAnswers().add(answer);
+            }
+
+            for (TestSubmission foundTestSubmission : foundResearchSubmission.getTestSubmissions()) {
+                TestSubmission testSubmission = new TestSubmission();
+                testSubmission.setAnswers(new ArrayList<>());
+
+                for (RangeTestQuestionAnswer foundAnswer : foundTestSubmission.getAnswers()) {
+                    RangeTestQuestionAnswer answer = new RangeTestQuestionAnswer();
+                    answer.setAnswer(foundAnswer.getAnswer());
+
+                    testSubmission.getAnswers().add(answer);
+                }
+
+                researchSubmission.getTestSubmissions().add(testSubmission);
+            }
+
+            result.add(researchSubmission);
+        }
 
         return new BasicOutput();
     }

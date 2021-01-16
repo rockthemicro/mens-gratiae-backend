@@ -99,4 +99,11 @@ public class ResearchesController {
                 .ok()
                 .body(researchService.deleteSubmission(id));
     }
+
+    @GetMapping("/{id}/getSubmissions")
+    public ResponseEntity<BasicOutput> getSubmissions(@PathVariable @Valid long id) {
+        return ResponseEntity
+                .ok()
+                .body(researchService.getSubmissions(id));
+    }
 }

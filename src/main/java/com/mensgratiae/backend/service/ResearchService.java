@@ -20,5 +20,7 @@ public interface ResearchService {
 
     BasicOutput addSubmission(AddSubmissionInput submission);
 
-    BasicOutput deleteSubmission(long id);
+    BasicOutput deleteSubmission(long submissionId);
+
+    BasicOutput getSubmissions(long researchId);
 }

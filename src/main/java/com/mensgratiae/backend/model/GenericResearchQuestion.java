@@ -18,7 +18,7 @@ public class GenericResearchQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "researchId", referencedColumnName = "id")
     private Research research;
 
@@ -43,6 +43,6 @@ public class GenericResearchQuestion {
         YES_NO, RANGE, TEXT, SINGLE_CHOICE, MULTIPLE_CHOICE, NUMBER
     }
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question", fetch = FetchType.LAZY)
     private List<GenericResearchQuestionAnswer> answers;
 }
