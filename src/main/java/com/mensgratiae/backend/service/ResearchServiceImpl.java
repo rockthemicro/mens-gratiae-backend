@@ -10,10 +10,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +26,9 @@ public class ResearchServiceImpl implements ResearchService {
     private ResearchSubmissionRepository researchSubmissionRepository;
     private TestRepository testRepository;
     private TestSubmissionRepository testSubmissionRepository;
+
+    private static final String GENERIC_RESEARCH_QUESTION_FORMAT = "generic_question_%d";
+    private static final String RANGE_TEST_QUESTION_FORMAT = "test_%d_question_%d";
 
     @Override
     public ResearchesGetOutput getResearches() {
@@ -199,39 +202,92 @@ public class ResearchServiceImpl implements ResearchService {
 
     @Override
     public BasicOutput getSubmissions(long researchId) {
-        List<ResearchSubmission> result = new ArrayList<>();
         List<ResearchSubmission> foundResearchSubmissionList = researchSubmissionRepository.findAllByResearchId(researchId);
 
-
+        Map<Long, Map<String, String>> submissions = new TreeMap<>();
         for (ResearchSubmission foundResearchSubmission : foundResearchSubmissionList) {
-            ResearchSubmission researchSubmission = new ResearchSubmission();
-            researchSubmission.setAnswers(new ArrayList<>());
-            researchSubmission.setTestSubmissions(new ArrayList<>());
-
-            for (GenericResearchQuestionAnswer foundAnswer : foundResearchSubmission.getAnswers()) {
-                GenericResearchQuestionAnswer answer = new GenericResearchQuestionAnswer();
-                answer.setAnswer(foundAnswer.getAnswer());
-
-                researchSubmission.getAnswers().add(answer);
-            }
-
-            for (TestSubmission foundTestSubmission : foundResearchSubmission.getTestSubmissions()) {
-                TestSubmission testSubmission = new TestSubmission();
-                testSubmission.setAnswers(new ArrayList<>());
-
-                for (RangeTestQuestionAnswer foundAnswer : foundTestSubmission.getAnswers()) {
-                    RangeTestQuestionAnswer answer = new RangeTestQuestionAnswer();
-                    answer.setAnswer(foundAnswer.getAnswer());
-
-                    testSubmission.getAnswers().add(answer);
-                }
-
-                researchSubmission.getTestSubmissions().add(testSubmission);
-            }
-
-            result.add(researchSubmission);
+            submissions.put(foundResearchSubmission.getId(), new TreeMap<>(this::compareMultiPartStringsByValuesInside));
         }
+
+        foundResearchSubmissionList.stream()
+                .map(ResearchSubmission::getAnswers)
+                .flatMap(Collection::stream)
+                .forEach(answer -> putGenericResearchQuestionAnswer(answer, submissions));
+
+        foundResearchSubmissionList.stream()
+                .map(ResearchSubmission::getTestSubmissions)
+                .flatMap(Collection::stream)
+                .map(TestSubmission::getAnswers)
+                .flatMap(Collection::stream)
+                .forEach(answer -> putRangeTestQuestionAnswer(answer, submissions));
 
         return new BasicOutput();
     }
+
+
+    private void putGenericResearchQuestionAnswer(GenericResearchQuestionAnswer answer,
+                                                  Map<Long, Map<String, String>> submissions) {
+
+        Map<String, String> submission = submissions.get(answer.getResearchSubmission().getId());
+        String submissionQuestionId = format(GENERIC_RESEARCH_QUESTION_FORMAT, answer.getQuestion().getId());
+
+        if (submission.containsKey(submissionQuestionId)) {
+            String existentResponse = submission.get(submissionQuestionId);
+            submission.put(submissionQuestionId, format("%s,%s", existentResponse, answer.getAnswer()));
+        } else {
+            submission.put(submissionQuestionId, answer.getAnswer());
+        }
+    }
+
+    private void putRangeTestQuestionAnswer(RangeTestQuestionAnswer answer,
+                                            Map<Long, Map<String, String>> submissions) {
+
+
+        Map<String, String> submission = submissions.get(answer.getTestSubmission().getResearchSubmission().getId());
+        String submissionTestQuestionId = format(
+                RANGE_TEST_QUESTION_FORMAT,
+                answer.getTestSubmission().getTest().getId(),
+                answer.getQuestion().getId());
+
+        submission.put(submissionTestQuestionId, answer.getAnswer().toString());
+    }
+
+    private int compareMultiPartStringsByValuesInside(String s1, String s2) {
+        String[] parts1 = s1.split("_");
+        String[] parts2 = s2.split("_");
+        int i = 0;
+
+        while (true) {
+            /* first string has more parts */
+            if (parts1.length > i && parts2.length <= i) {
+                return 1;
+            }
+            /* second string has more parts */
+            if (parts1.length <= i && parts2.length > i) {
+                return -1;
+            }
+            /* both strings have the same number of parts, and they are equal */
+            if (parts1.length <= i && parts2.length <= i) {
+                return 0;
+            }
+
+            /* we found a part with different values */
+            if (!parts1[i].equalsIgnoreCase(parts2[i])) {
+                try {
+                    /* the part is a number and can be compared */
+                    Long nr1 = Long.valueOf(parts1[i]);
+                    Long nr2 = Long.valueOf(parts2[i]);
+
+                    return (int) (nr1 - nr2);
+
+                } catch (NumberFormatException e) {
+                    /* the part is not a number and is compared in the usual way */
+                    return s1.compareTo(s2);
+                }
+            }
+
+            i++;
+        }
+    }
+
 }
