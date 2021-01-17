@@ -160,6 +160,11 @@ public class ResearchServiceImpl implements ResearchService {
                         .getQuestion()
                         .setId(questionId);
 
+                genericResearchQuestionAnswer.setResearchSubmission(new ResearchSubmission());
+                genericResearchQuestionAnswer
+                        .getResearchSubmission()
+                        .setId(finalResearchSubmission.getId());
+
                 genericResearchQuestionAnswerRepository
                         .save(genericResearchQuestionAnswer);
             }
