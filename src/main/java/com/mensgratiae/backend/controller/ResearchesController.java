@@ -108,7 +108,7 @@ public class ResearchesController {
                 .body(researchService.deleteSubmission(id));
     }
 
-    @GetMapping("/{id}/getSubmissions")
+    @GetMapping("/getSubmissions/{id}")
     public ResponseEntity<Resource> getSubmissions(@PathVariable @Valid long id) throws IOException {
         try {
             File result = researchService.getSubmissions(id);
