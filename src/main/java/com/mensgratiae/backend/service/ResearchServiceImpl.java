@@ -26,6 +26,7 @@ public class ResearchServiceImpl implements ResearchService {
     private ResearchRepository researchRepository;
     private GenericResearchQuestionRepository genericResearchQuestionRepository;
     private GenericResearchQuestionAnswerRepository genericResearchQuestionAnswerRepository;
+    private RangeTestQuestionRepository rangeTestQuestionRepository;
     private RangeTestQuestionAnswerRepository rangeTestQuestionAnswerRepository;
     private ResearchSubmissionRepository researchSubmissionRepository;
     private TestRepository testRepository;
@@ -33,6 +34,9 @@ public class ResearchServiceImpl implements ResearchService {
 
     private static final String GENERIC_RESEARCH_QUESTION_FORMAT = "generic_question_%d";
     private static final String RANGE_TEST_QUESTION_FORMAT = "test_%d_question_%d";
+
+    private static final String FILE_SUBMISSIONS = "submissions.csv";
+    private static final String FILE_QUESTIONS = "questions.csv";
 
     @Override
     public ResearchesGetOutput getResearches() {
@@ -233,54 +237,136 @@ public class ResearchServiceImpl implements ResearchService {
                 .flatMap(Collection::stream)
                 .forEach(answer -> putRangeTestQuestionAnswer(answer, submissions));
 
-        writeSubmissionsToFile(submissions);
+        writeSubmissionsAndQuestionsToFile(submissions);
 
         return result;
     }
 
-    private void writeSubmissionsToFile(Map<Long, Map<String, String>> submissions) {
-        TreeSet<String> headersSet = new TreeSet<>(this::compareMultiPartStringsByValuesInside);
-        List<String> headers = new ArrayList<>();
-        headers.add("research_submission_id");
+    private void writeSubmissionsAndQuestionsToFile(Map<Long, Map<String, String>> submissions) {
+        TreeSet<String> questionNamesSet = new TreeSet<>(this::compareMultiPartStringsByValuesInside);
+        submissions.forEach((researchSubmissionId, map) -> questionNamesSet.addAll(map.keySet()));
 
-        submissions.forEach((researchSubmissionId, map) -> headersSet.addAll(map.keySet()));
-        headers.addAll(headersSet);
-
-        try (BufferedWriter output = new BufferedWriter(new FileWriter(new File("output.csv")));
-             ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)) {
-
-            listWriter.write(headers);
-
-            submissions.forEach((researchSubmissionId, map) -> {
-                List<String> row = new ArrayList<>();
-
-                row.add(researchSubmissionId.toString());
-                headersSet.forEach(header -> row.add(map.getOrDefault(header, "NULL")));
-
-                try {
-                    listWriter.write(row);
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            });
-
+        try {
+            writeQuestionsToFile(questionNamesSet);
+            writeSubmissionsToFile(submissions, questionNamesSet);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
 
+    private void writeSubmissionsToFile(Map<Long, Map<String, String>> submissions, Set<String> questionNamesSet) throws IOException {
+        try (BufferedWriter output = new BufferedWriter(new FileWriter(new File(FILE_SUBMISSIONS)));
+             ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)) {
+
+            List<String> headers = new ArrayList<>();
+            headers.add("research_submission_id");
+            headers.addAll(questionNamesSet);
+            listWriter.write(headers);
+
+            for (Map.Entry<Long, Map<String, String>> entry : submissions.entrySet()) {
+                List<String> row = new ArrayList<>();
+                Long submissionId = entry.getKey();
+                Map<String, String> answers = entry.getValue();
+
+                row.add(submissionId.toString());
+                questionNamesSet.forEach(questionName -> row.add(answers.getOrDefault(questionName, "NULL")));
+
+                listWriter.write(row);
+            }
+        }
+    }
+
+    private void writeQuestionsToFile(Set<String> questionNamesSet) throws IOException {
+        try (BufferedWriter output = new BufferedWriter(new FileWriter(new File(FILE_QUESTIONS)));
+             ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)) {
+
+            List<String> headers = new ArrayList<>();
+            headers.add("question_name");
+            headers.add("type");
+            headers.add("question");
+            listWriter.write(headers);
+
+            List<String> questionNames = new ArrayList<>(questionNamesSet);
+            for (String questionName : questionNames) {
+
+                List<String> row = new ArrayList<>();
+
+                row.add(questionName);
+                row.add(getQuestionType(questionName));
+                row.add(getQuestionBody(questionName));
+
+                listWriter.write(row);
+            }
+
+        }
+    }
+
+    private String getQuestionBody(String questionName) {
+        String[] questionParts = questionName.split("_");
+
+        if (questionParts.length == 3 && questionParts[0].equalsIgnoreCase("generic")
+                && questionParts[1].equalsIgnoreCase("question")) {
+
+            long questionId = Long.valueOf(questionParts[2]);
+            Optional<GenericResearchQuestion> question = genericResearchQuestionRepository.findById(questionId);
+
+            if (question.isPresent()) {
+                return question.get().getQuestion();
+            }
+        }
+
+
+        if (questionParts.length == 4 && questionParts[0].equalsIgnoreCase("test")
+                && questionParts[2].equalsIgnoreCase("question")) {
+
+            long questionId = Long.valueOf(questionParts[3]);
+            Optional<RangeTestQuestion> question = rangeTestQuestionRepository.findById(questionId);
+
+            if (question.isPresent()) {
+                return question.get().getQuestion();
+            }
+        }
+
+        return "ERROR";
+    }
+
+    private String getQuestionType(String questionName) {
+        String[] questionParts = questionName.split("_");
+
+        if (questionParts.length == 3 && questionParts[0].equalsIgnoreCase("generic")
+                && questionParts[1].equalsIgnoreCase("question")) {
+
+            long questionId = Long.valueOf(questionParts[2]);
+            Optional<GenericResearchQuestion> question = genericResearchQuestionRepository.findById(questionId);
+
+            if (question.isPresent()) {
+                return format("generic_research_question_%s", question.get().getType().toString());
+            }
+
+            return "generic_research_question_ERROR";
+        }
+
+
+        if (questionParts.length == 4 && questionParts[0].equalsIgnoreCase("test")
+                && questionParts[2].equalsIgnoreCase("question")) {
+
+            return "range_test_question";
+        }
+
+        return "ERROR";
     }
 
     private void putGenericResearchQuestionAnswer(GenericResearchQuestionAnswer answer,
                                                   Map<Long, Map<String, String>> submissions) {
 
         Map<String, String> submission = submissions.get(answer.getResearchSubmission().getId());
-        String submissionQuestionId = format(GENERIC_RESEARCH_QUESTION_FORMAT, answer.getQuestion().getId());
+        String submissionResearchQuestionId = format(GENERIC_RESEARCH_QUESTION_FORMAT, answer.getQuestion().getId());
 
-        if (submission.containsKey(submissionQuestionId)) {
-            String existentResponse = submission.get(submissionQuestionId);
-            submission.put(submissionQuestionId, format("%s,%s", existentResponse, answer.getAnswer()));
+        if (submission.containsKey(submissionResearchQuestionId)) {
+            String existentResponse = submission.get(submissionResearchQuestionId);
+            submission.put(submissionResearchQuestionId, format("%s,%s", existentResponse, answer.getAnswer()));
         } else {
-            submission.put(submissionQuestionId, answer.getAnswer());
+            submission.put(submissionResearchQuestionId, answer.getAnswer());
         }
     }
 
