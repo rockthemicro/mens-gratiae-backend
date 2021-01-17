@@ -16,6 +16,8 @@ import org.supercsv.prefs.CsvPreference;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static java.lang.String.format;
 
@@ -37,6 +39,7 @@ public class ResearchServiceImpl implements ResearchService {
 
     private static final String FILE_SUBMISSIONS = "submissions.csv";
     private static final String FILE_QUESTIONS = "questions.csv";
+    private static final String FILE_ZIP_ARCHIVE = "submissions_and_questions.zip";
 
     @Override
     public ResearchesGetOutput getResearches() {
@@ -237,20 +240,46 @@ public class ResearchServiceImpl implements ResearchService {
                 .flatMap(Collection::stream)
                 .forEach(answer -> putRangeTestQuestionAnswer(answer, submissions));
 
-        writeSubmissionsAndQuestionsToFile(submissions);
+        writeSubmissionsAndQuestionsToFiles(submissions);
 
         return result;
     }
 
-    private void writeSubmissionsAndQuestionsToFile(Map<Long, Map<String, String>> submissions) {
+
+
+    private void writeSubmissionsAndQuestionsToFiles(Map<Long, Map<String, String>> submissions) {
         TreeSet<String> questionNamesSet = new TreeSet<>(this::compareMultiPartStringsByValuesInside);
         submissions.forEach((researchSubmissionId, map) -> questionNamesSet.addAll(map.keySet()));
 
         try {
             writeQuestionsToFile(questionNamesSet);
             writeSubmissionsToFile(submissions, questionNamesSet);
+            zipFiles();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private void zipFiles() throws IOException {
+        List<String> srcFiles = Arrays.asList(FILE_QUESTIONS, FILE_SUBMISSIONS);
+
+        try (FileOutputStream fos = new FileOutputStream(FILE_ZIP_ARCHIVE);
+             ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+
+            for (String srcFile : srcFiles) {
+                File fileToZip = new File(srcFile);
+                ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+
+                zipOut.putNextEntry(zipEntry);
+
+                try (FileInputStream fis = new FileInputStream(fileToZip)) {
+                    byte[] bytes = new byte[1024];
+                    int length;
+                    while ((length = fis.read(bytes)) >= 0) {
+                        zipOut.write(bytes, 0, length);
+                    }
+                }
+            }
         }
     }
 
