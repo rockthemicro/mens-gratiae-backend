@@ -13,9 +13,7 @@ import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
 import org.supercsv.prefs.CsvPreference;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -208,6 +206,14 @@ public class ResearchServiceImpl implements ResearchService {
 
     @Override
     public BasicOutput getSubmissions(long researchId) {
+        BasicOutput result = new BasicOutput();
+
+        if (researchRepository.findById(researchId).isEmpty()) {
+            result.setStatus(BasicOutput.StatusEnum.ERROR);
+            result.addErrorsItem(format("Could not find research with id %d", researchId));
+            return result;
+        }
+
         List<ResearchSubmission> foundResearchSubmissionList = researchSubmissionRepository.findAllByResearchId(researchId);
 
         Map<Long, Map<String, String>> submissions = new TreeMap<>();
@@ -229,7 +235,7 @@ public class ResearchServiceImpl implements ResearchService {
 
         writeSubmissionsToFile(submissions);
 
-        return new BasicOutput();
+        return result;
     }
 
     private void writeSubmissionsToFile(Map<Long, Map<String, String>> submissions) {
@@ -237,11 +243,11 @@ public class ResearchServiceImpl implements ResearchService {
         List<String> headers = new ArrayList<>();
         headers.add("research_submission_id");
 
-        submissions.forEach((researchSubmissionId, map) -> map.keySet().forEach(headersSet::add));
+        submissions.forEach((researchSubmissionId, map) -> headersSet.addAll(map.keySet()));
         headers.addAll(headersSet);
 
-        StringWriter output = new StringWriter();
-        try (ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)){
+        try (BufferedWriter output = new BufferedWriter(new FileWriter(new File("output.csv")));
+             ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)) {
 
             listWriter.write(headers);
 
@@ -262,9 +268,7 @@ public class ResearchServiceImpl implements ResearchService {
             throw new UncheckedIOException(e);
         }
 
-        System.out.println(output);
     }
-
 
     private void putGenericResearchQuestionAnswer(GenericResearchQuestionAnswer answer,
                                                   Map<Long, Map<String, String>> submissions) {
