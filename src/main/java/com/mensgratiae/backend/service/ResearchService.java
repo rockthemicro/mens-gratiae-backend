@@ -2,7 +2,7 @@ package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
 
-import java.util.List;
+import java.io.File;
 
 public interface ResearchService {
     ResearchesGetOutput getResearches();
@@ -22,5 +22,5 @@ public interface ResearchService {
 
     BasicOutput deleteSubmission(long submissionId);
 
-    BasicOutput getSubmissions(long researchId);
+    File getSubmissions(long researchId);
 }

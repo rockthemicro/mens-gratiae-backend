@@ -212,13 +212,9 @@ public class ResearchServiceImpl implements ResearchService {
     }
 
     @Override
-    public BasicOutput getSubmissions(long researchId) {
-        BasicOutput result = new BasicOutput();
-
+    public File getSubmissions(long researchId) {
         if (researchRepository.findById(researchId).isEmpty()) {
-            result.setStatus(BasicOutput.StatusEnum.ERROR);
-            result.addErrorsItem(format("Could not find research with id %d", researchId));
-            return result;
+            throw new RuntimeException(format("Could not find research with id %d", researchId));
         }
 
         List<ResearchSubmission> foundResearchSubmissionList = researchSubmissionRepository.findAllByResearchId(researchId);
@@ -242,7 +238,7 @@ public class ResearchServiceImpl implements ResearchService {
 
         writeSubmissionsAndQuestionsToFiles(submissions);
 
-        return result;
+        return new File(FILE_ZIP_ARCHIVE);
     }
 
 
