@@ -9,7 +9,13 @@ import com.mensgratiae.backend.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.supercsv.io.CsvListWriter;
+import org.supercsv.io.ICsvListWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -221,7 +227,42 @@ public class ResearchServiceImpl implements ResearchService {
                 .flatMap(Collection::stream)
                 .forEach(answer -> putRangeTestQuestionAnswer(answer, submissions));
 
+        writeSubmissionsToFile(submissions);
+
         return new BasicOutput();
+    }
+
+    private void writeSubmissionsToFile(Map<Long, Map<String, String>> submissions) {
+        TreeSet<String> headersSet = new TreeSet<>(this::compareMultiPartStringsByValuesInside);
+        List<String> headers = new ArrayList<>();
+        headers.add("research_submission_id");
+
+        submissions.forEach((researchSubmissionId, map) -> map.keySet().forEach(headersSet::add));
+        headers.addAll(headersSet);
+
+        StringWriter output = new StringWriter();
+        try (ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)){
+
+            listWriter.write(headers);
+
+            submissions.forEach((researchSubmissionId, map) -> {
+                List<String> row = new ArrayList<>();
+
+                row.add(researchSubmissionId.toString());
+                headersSet.forEach(header -> row.add(map.getOrDefault(header, "NULL")));
+
+                try {
+                    listWriter.write(row);
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            });
+
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        System.out.println(output);
     }
 
 
