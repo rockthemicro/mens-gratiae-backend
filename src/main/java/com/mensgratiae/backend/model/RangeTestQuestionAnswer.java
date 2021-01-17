@@ -18,11 +18,11 @@ public class RangeTestQuestionAnswer {
     @Column
     private Integer answer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "questionId", referencedColumnName = "id")
     private RangeTestQuestion question;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "testSubmissionId", referencedColumnName = "id")
     private TestSubmission testSubmission;
 }

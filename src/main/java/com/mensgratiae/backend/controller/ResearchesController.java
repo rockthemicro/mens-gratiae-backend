@@ -4,10 +4,18 @@ package com.mensgratiae.backend.controller;
 import com.mensgratiae.backend.dto.*;
 import com.mensgratiae.backend.service.ResearchService;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/researches")
@@ -98,5 +106,31 @@ public class ResearchesController {
         return ResponseEntity
                 .ok()
                 .body(researchService.deleteSubmission(id));
+    }
+
+    @GetMapping("/getSubmissions/{id}")
+    public ResponseEntity<Resource> getSubmissions(@PathVariable @Valid long id) throws IOException {
+        try {
+            File result = researchService.getSubmissions(id);
+            return getByteArrayResourceResponseEntityFromFile(result);
+
+        } catch (Exception e) {
+            File errorFile = new File("ERROR.txt");
+            if (!errorFile.exists()) {
+                errorFile.createNewFile();
+            }
+
+            return getByteArrayResourceResponseEntityFromFile(errorFile);
+        }
+    }
+
+    private ResponseEntity<Resource> getByteArrayResourceResponseEntityFromFile(File file) throws IOException {
+        Path path = Paths.get(file.getAbsolutePath());
+        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+        return ResponseEntity.ok()
+                .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 }

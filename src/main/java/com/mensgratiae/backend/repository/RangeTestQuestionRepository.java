@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RangeTestQuestionRepository extends JpaRepository<RangeTestQuestion, Long> {
-    List<RangeTestQuestion> findAllByTest_Id(long testId);
+    List<RangeTestQuestion> findAllByTestId(long testId);
 }

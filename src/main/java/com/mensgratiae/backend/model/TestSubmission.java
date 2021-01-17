@@ -16,14 +16,14 @@ public class TestSubmission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "testId", referencedColumnName = "id")
     private Test test;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "researchSubmissionId", referencedColumnName = "id")
     private ResearchSubmission researchSubmission;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "testSubmission")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "testSubmission", fetch = FetchType.LAZY)
     private List<RangeTestQuestionAnswer> answers;
 }

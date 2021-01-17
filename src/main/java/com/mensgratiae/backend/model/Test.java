@@ -19,7 +19,7 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "researchId", referencedColumnName = "id")
     private Research research;
 
@@ -40,9 +40,9 @@ public class Test {
     @Column
     private int relativePosition;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "test")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "test", fetch = FetchType.LAZY)
     private List<RangeTestQuestion> questions;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "test")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "test", fetch = FetchType.LAZY)
     private List<TestSubmission> testSubmissions;
 }

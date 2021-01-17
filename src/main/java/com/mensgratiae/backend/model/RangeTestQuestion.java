@@ -17,7 +17,7 @@ public class RangeTestQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "testId", referencedColumnName = "id")
     private Test test;
 
@@ -28,6 +28,6 @@ public class RangeTestQuestion {
     @Column
     private int relativePosition;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question", fetch = FetchType.LAZY)
     private List<RangeTestQuestionAnswer> answers;
 }

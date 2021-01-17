@@ -20,11 +20,11 @@ public class GenericResearchQuestionAnswer {
     @Type(type="text")
     private String answer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "questionId", referencedColumnName = "id")
     private GenericResearchQuestion question;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "researchSubmissionId", referencedColumnName = "id")
     private ResearchSubmission researchSubmission;
 }

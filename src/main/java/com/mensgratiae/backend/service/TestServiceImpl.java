@@ -2,7 +2,6 @@ package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
 import com.mensgratiae.backend.model.*;
-import com.mensgratiae.backend.model.mapper.GenericResearchQuestionMapper;
 import com.mensgratiae.backend.model.mapper.RangeTestQuestionMapper;
 import com.mensgratiae.backend.model.mapper.TestMapper;
 import com.mensgratiae.backend.repository.RangeTestQuestionAnswerRepository;
@@ -27,7 +26,7 @@ public class TestServiceImpl implements TestService {
     public TestsGetOutput getTests(long researchId) {
         TestsGetOutput testsGetOutput = new TestsGetOutput();
 
-        List<Test> tests = testRepository.findAllByResearch_Id(researchId);
+        List<Test> tests = testRepository.findAllByResearchId(researchId);
         testsGetOutput.setTests(tests
                 .stream()
                 .map(TestMapper.INSTANCE::testToTestDto)
@@ -51,7 +50,7 @@ public class TestServiceImpl implements TestService {
         Test test = testOpt.get();
         testGetOutput.setTest(TestMapper.INSTANCE.testToTestDto(test));
 
-        List<RangeTestQuestion> questions = rangeTestQuestionRepository.findAllByTest_Id(testId);
+        List<RangeTestQuestion> questions = rangeTestQuestionRepository.findAllByTestId(testId);
         testGetOutput.setRangeTestQuestions(questions
                 .stream()
                 .map(RangeTestQuestionMapper.INSTANCE::questionToQuestionDto)

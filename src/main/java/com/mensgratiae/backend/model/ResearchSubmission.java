@@ -17,13 +17,13 @@ public class ResearchSubmission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "researchId", referencedColumnName = "id")
     private Research research;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "researchSubmission")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "researchSubmission", fetch = FetchType.LAZY)
     private List<TestSubmission> testSubmissions;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "researchSubmission")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "researchSubmission", fetch = FetchType.LAZY)
     private List<GenericResearchQuestionAnswer> answers;
 }
