@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtTokenUtil;
     private final DBUserDetailsService userDetailsService;
+    private final UserMapper userMapper;
 
     public UserSignUpOutput signUp(UserDto userDto) {
         UserSignUpOutput userSignUpOutput = new UserSignUpOutput();
@@ -41,7 +42,7 @@ public class UserServiceImpl implements UserService {
             return userSignUpOutput;
         }
 
-        User user = UserMapper.INSTANCE.userDtoToUser(userDto);
+        User user = userMapper.userDtoToUser(userDto);
         user.setRole(User.RoleEnum.USER);
         userRepository.save(user);
 

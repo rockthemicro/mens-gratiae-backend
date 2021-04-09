@@ -16,19 +16,21 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static com.mensgratiae.backend.security.SecurityConstants.AUTHENTICATE_URL;
-import static com.mensgratiae.backend.security.SecurityConstants.SIGN_UP_URL;
+import static com.mensgratiae.backend.security.SecurityConstants.SWAGGER_UI_RESOURCES;
+import static com.mensgratiae.backend.security.SecurityConstants.SWAGGER_UI_URL;
+import static com.mensgratiae.backend.security.SecurityConstants.SWAGGER_UI_V2;
+import static com.mensgratiae.backend.security.SecurityConstants.SWAGGER_UI_WEBJARS;
+import static com.mensgratiae.backend.security.SecurityConstants.USERS_API;
 
 @EnableWebSecurity
 @AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final DBUserDetailsService userDetailsService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtRequestFilter jwtRequestFilter;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
 
     @Override
@@ -37,8 +39,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers(AUTHENTICATE_URL).permitAll()
-                    .antMatchers(SIGN_UP_URL).permitAll()
+                    .antMatchers(USERS_API).permitAll()
+                    .antMatchers(SWAGGER_UI_URL).permitAll()
+                    .antMatchers(SWAGGER_UI_WEBJARS).permitAll()
+                    .antMatchers(SWAGGER_UI_RESOURCES).permitAll()
+                    .antMatchers(SWAGGER_UI_V2).permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .exceptionHandling().and()

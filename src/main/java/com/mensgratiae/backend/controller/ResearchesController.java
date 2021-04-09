@@ -29,7 +29,7 @@ import java.nio.file.Paths;
 @AllArgsConstructor
 public class ResearchesController {
 
-    private ResearchService researchService;
+    private final ResearchService researchService;
 
     @GetMapping
     public ResponseEntity<ResearchesGetOutput> getResearches() {

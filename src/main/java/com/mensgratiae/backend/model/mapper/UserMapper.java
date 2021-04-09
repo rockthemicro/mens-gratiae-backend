@@ -5,14 +5,11 @@ import com.mensgratiae.backend.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Mapper
 public abstract class UserMapper {
-
-    public static UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Autowired
     protected BCryptPasswordEncoder bCryptPasswordEncoder;
