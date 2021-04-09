@@ -1,13 +1,17 @@
 package com.mensgratiae.backend.controller;
 
 import com.mensgratiae.backend.dto.*;
+import com.mensgratiae.backend.dto.outputs.AddOrUpdateRangeTestQuestionOutput;
+import com.mensgratiae.backend.dto.outputs.AddOrUpdateTestOutput;
+import com.mensgratiae.backend.dto.outputs.BasicOutput;
+import com.mensgratiae.backend.dto.outputs.TestGetOutput;
+import com.mensgratiae.backend.dto.outputs.TestsGetOutput;
 import com.mensgratiae.backend.service.TestService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/tests")

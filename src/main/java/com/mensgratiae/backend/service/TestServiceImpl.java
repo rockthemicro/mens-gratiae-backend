@@ -1,6 +1,11 @@
 package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
+import com.mensgratiae.backend.dto.outputs.AddOrUpdateRangeTestQuestionOutput;
+import com.mensgratiae.backend.dto.outputs.AddOrUpdateTestOutput;
+import com.mensgratiae.backend.dto.outputs.BasicOutput;
+import com.mensgratiae.backend.dto.outputs.TestGetOutput;
+import com.mensgratiae.backend.dto.outputs.TestsGetOutput;
 import com.mensgratiae.backend.model.*;
 import com.mensgratiae.backend.model.mapper.RangeTestQuestionMapper;
 import com.mensgratiae.backend.model.mapper.TestMapper;

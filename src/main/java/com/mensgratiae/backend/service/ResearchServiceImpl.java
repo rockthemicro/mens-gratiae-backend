@@ -1,6 +1,12 @@
 package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
+import com.mensgratiae.backend.dto.inputs.AddSubmissionInput;
+import com.mensgratiae.backend.dto.outputs.AddOrUpdateGenericResearchQuestionOutput;
+import com.mensgratiae.backend.dto.outputs.AddOrUpdateResearchOutput;
+import com.mensgratiae.backend.dto.outputs.BasicOutput;
+import com.mensgratiae.backend.dto.outputs.ResearchGetOutput;
+import com.mensgratiae.backend.dto.outputs.ResearchesGetOutput;
 import com.mensgratiae.backend.model.*;
 import com.mensgratiae.backend.model.mapper.GenericResearchQuestionMapper;
 import com.mensgratiae.backend.model.mapper.ResearchMapper;

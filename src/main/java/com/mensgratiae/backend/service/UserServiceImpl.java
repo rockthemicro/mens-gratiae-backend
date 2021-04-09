@@ -1,13 +1,22 @@
 package com.mensgratiae.backend.service;
 
-import com.mensgratiae.backend.dto.BasicOutput;
+import com.mensgratiae.backend.dto.inputs.UserAuthenticationInput;
+import com.mensgratiae.backend.dto.outputs.BasicOutput;
 import com.mensgratiae.backend.dto.UserDto;
-import com.mensgratiae.backend.dto.UserLoginOutput;
-import com.mensgratiae.backend.dto.UserSignUpOutput;
+import com.mensgratiae.backend.dto.outputs.UserAuthenticationOutput;
+import com.mensgratiae.backend.dto.outputs.UserLoginOutput;
+import com.mensgratiae.backend.dto.outputs.UserSignUpOutput;
 import com.mensgratiae.backend.model.User;
 import com.mensgratiae.backend.model.mapper.UserMapper;
 import com.mensgratiae.backend.repository.UserRepository;
+import com.mensgratiae.backend.util.JwtUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,7 +25,10 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtTokenUtil;
+    private final DBUserDetailsService userDetailsService;
 
     public UserSignUpOutput signUp(UserDto userDto) {
         UserSignUpOutput userSignUpOutput = new UserSignUpOutput();
@@ -61,4 +73,26 @@ public class UserServiceImpl implements UserService {
 
         return userLoginOutput;
     }
+
+    @Override
+    public UserAuthenticationOutput userAuthenticate(UserAuthenticationInput userAuthenticationInput) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userAuthenticationInput.getUsername(), userAuthenticationInput.getPassword())
+            );
+        }
+        catch (BadCredentialsException e) {
+            throw new RuntimeException("Incorrect username or password", e);
+        }
+
+
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(userAuthenticationInput.getUsername());
+
+        final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+        return new UserAuthenticationOutput(jwt);
+    }
+
+
 }

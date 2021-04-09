@@ -1,5 +1,6 @@
-package com.mensgratiae.backend.dto;
+package com.mensgratiae.backend.dto.outputs;
 
+import com.mensgratiae.backend.dto.ResearchDto;
 import lombok.*;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.mensgratiae.backend.dto;
+package com.mensgratiae.backend.dto.outputs;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

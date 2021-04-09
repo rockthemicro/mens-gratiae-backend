@@ -1,8 +1,11 @@
 package com.mensgratiae.backend.service;
 
 import com.mensgratiae.backend.dto.*;
-
-import java.util.List;
+import com.mensgratiae.backend.dto.outputs.AddOrUpdateRangeTestQuestionOutput;
+import com.mensgratiae.backend.dto.outputs.AddOrUpdateTestOutput;
+import com.mensgratiae.backend.dto.outputs.BasicOutput;
+import com.mensgratiae.backend.dto.outputs.TestGetOutput;
+import com.mensgratiae.backend.dto.outputs.TestsGetOutput;
 
 public interface TestService {
     TestsGetOutput getTests(long researchId);
